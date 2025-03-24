@@ -1,0 +1,1 @@
+# Não requer instalação de pacotes adicionais, apenas as bibliotecas padrão do Python 
