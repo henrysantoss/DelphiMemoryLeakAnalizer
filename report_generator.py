@@ -233,7 +233,7 @@ def generate_report(results, output_path, title="Relatório de Vazamento de Mem�
     </div>
     <div class="stats">
         <div class="stat-box">
-            <h3>Top Tipos de Objeto</h3>
+            <h3>Objetos com número de possíveis vazamentos</h3>
             <table>
                 <tr>
                     <th>Tipo</th>
@@ -243,7 +243,7 @@ def generate_report(results, output_path, title="Relatório de Vazamento de Mem�
             </table>
         </div>
         <div class="stat-box">
-            <h3>Arquivos com Mais Problemas</h3>
+            <h3>Arquivos com mais objetos não liberados</h3>
             <table>
                 <tr>
                     <th>Arquivo</th>
