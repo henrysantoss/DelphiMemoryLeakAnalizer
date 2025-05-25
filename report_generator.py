@@ -6,18 +6,22 @@ import webbrowser
 def generate_report(results, output_path, title="Relatório de Vazamento de Memória", detailed=True):
     """
     Gera um relatório HTML de objetos não liberados
-    
+
     Args:
         results (list): Lista de resultados da análise
         output_path (str): Caminho para salvar o relatório
         title (str): Título do relatório
         detailed (bool): Se deve incluir detalhes completos
     """
+    import os
+    import collections
+    from datetime import datetime
+
     if not results:
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(generate_empty_report())
         return
-    
+
     # Agrupar resultados por arquivo
     results_by_file = {}
     for item in results:
@@ -25,11 +29,11 @@ def generate_report(results, output_path, title="Relatório de Vazamento de Mem�
         if file_path not in results_by_file:
             results_by_file[file_path] = []
         results_by_file[file_path].append(item)
-    
+
     # Estatísticas por tipo de objeto
     object_types = collections.Counter([item['object_type'] for item in results])
     most_common_types = object_types.most_common(10)
-    
+
     # Criar conteúdo HTML
     html_content = f"""<!DOCTYPE html>
 <html lang="pt-BR">
@@ -69,6 +73,34 @@ def generate_report(results, output_path, title="Relatório de Vazamento de Mem�
             padding: 15px;
             margin-bottom: 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            position: relative;
+            transition: box-shadow 0.2s;
+        }}
+        .file-box .arrow {{
+            display: inline-block;
+            width: 0;
+            height: 0;
+            margin-right: 8px;
+            vertical-align: middle;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 10px solid #3498db;
+            transition: transform 0.2s;
+        }}
+        .file-box.collapsed .arrow {{
+            transform: rotate(0deg);   /* seta para a direita */
+        }}
+        .file-box.expanded .arrow {{
+            transform: rotate(90deg);  /* seta para baixo */
+        }}
+        .file-box.collapsed > p,
+        .file-box.collapsed > .method-box {{
+            display: none;
+        }}
+        .file-box.expanded > p,
+        .file-box.expanded > .method-box {{
+            display: block;
         }}
         .method-box {{
             background-color: #f9f9f9;
@@ -186,13 +218,11 @@ def generate_report(results, output_path, title="Relatório de Vazamento de Mem�
 <body>
     <h1>{title}</h1>
     <div class="datetime">Gerado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}</div>
-    
     <div class="summary">
         <h2>Resumo da Análise</h2>
         <p>Total de objetos não liberados: <strong>{len(results)}</strong></p>
         <p>Total de arquivos com problemas: <strong>{len(results_by_file)}</strong></p>
     </div>
-    
     <div class="stats">
         <div class="stat-box">
             <h3>Top Tipos de Objeto</h3>
@@ -204,7 +234,6 @@ def generate_report(results, output_path, title="Relatório de Vazamento de Mem�
                 {"".join(f"<tr><td>{obj_type}</td><td>{count}</td></tr>" for obj_type, count in most_common_types)}
             </table>
         </div>
-        
         <div class="stat-box">
             <h3>Arquivos com Mais Problemas</h3>
             <table>
@@ -218,26 +247,22 @@ def generate_report(results, output_path, title="Relatório de Vazamento de Mem�
         </div>
     </div>
 """
-    
+
     # Adicionar detalhes para cada arquivo
     if detailed:
         html_content += "<h2>Detalhes por Arquivo</h2>\n"
-        
-        for file_path, items in results_by_file.items():
+        for idx, (file_path, items) in enumerate(results_by_file.items()):
             file_name = os.path.basename(file_path)
-            
             html_content += f"""
-    <div class="file-box">
-        <h3>{file_name} <span class="badge">{len(items)}</span></h3>
+    <div class="file-box" id="file-box-{idx}">
+        <h3><span class="arrow"></span>{file_name} <span class="badge">{len(items)}</span></h3>
         <p>Caminho: {file_path}</p>
 """
-            
             # Agrupar por método
             methods = collections.defaultdict(list)
             for item in items:
                 key = (item['method_name'], item['method_line'])
                 methods[key].append(item)
-            
             for (method_name, method_line), method_items in methods.items():
                 method_info = method_items[0]
                 html_content += f"""
@@ -251,7 +276,6 @@ def generate_report(results, output_path, title="Relatório de Vazamento de Mem�
                     <th>Declaração</th>
                 </tr>
 """
-                
                 for item in method_items:
                     html_content += f"""
                 <tr class="object-item">
@@ -261,19 +285,16 @@ def generate_report(results, output_path, title="Relatório de Vazamento de Mem�
                     <td><code>{item['initialization']}</code></td>
                 </tr>
 """
-                
                 html_content += """
             </table>
         </div>
 """
-            
             html_content += "</div>\n"
-    
+
     # Adicionar recomendações
     html_content += """
     <div class="recommendations">
         <h2>Recomendações para Correção</h2>
-        
         <h3>1. Use blocos try-finally para garantir a liberação de objetos</h3>
         <div class="code">
 try<br>
@@ -283,20 +304,28 @@ finally<br>
 &nbsp;&nbsp;FreeAndNil(Obj);<br>
 end;
         </div>
-        
         <h3>2. Considere usar o padrão de escopo automático</h3>
         <p>Utilize construtores de escopo automático como <code>TAutoFree&lt;T&gt;</code> quando disponível</p>
-        
         <h3>3. Verifique se o objeto é transferido de escopo</h3>
         <p>Se o objeto é passado para outro método que assume a propriedade dele, não é necessário liberar no método atual.</p>
-        
         <h3>4. Para interfaces Delphi (IInterface)</h3>
         <p>Objetos que implementam <code>IInterface</code> usam contagem de referência e são liberados automaticamente quando a última referência é liberada.</p>
     </div>
+    <script>
+    document.querySelectorAll('.file-box').forEach(function(box) {
+        // Estado inicial: colapsado
+        box.classList.add('collapsed');
+        box.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
+            this.classList.toggle('collapsed');
+            this.classList.toggle('expanded');
+        });
+    });
+    </script>
 </body>
 </html>
 """
-    
+
     # Salvar o relatório
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(html_content)
