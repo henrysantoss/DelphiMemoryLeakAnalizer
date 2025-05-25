@@ -10,6 +10,7 @@ def generate_report(results, output_path, title="Relatório de Vazamento de Mem�
     Args:
         results (list): Lista de resultados da análise
         output_path (str): Caminho para salvar o relatório
+        dproj_dir (str): Caminho da pasta do arquivo .dproj (base para exibir caminho relativo)
         title (str): Título do relatório
         detailed (bool): Se deve incluir detalhes completos
     """
@@ -73,9 +74,16 @@ def generate_report(results, output_path, title="Relatório de Vazamento de Mem�
             padding: 15px;
             margin-bottom: 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            cursor: pointer;
             position: relative;
             transition: box-shadow 0.2s;
+            cursor: default;
+        }}
+        .file-box > h3 {{
+            cursor: pointer;
+            user-select: none;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.1em;
         }}
         .file-box .arrow {{
             display: inline-block;
@@ -242,16 +250,16 @@ def generate_report(results, output_path, title="Relatório de Vazamento de Mem�
                     <th>Objetos</th>
                 </tr>
                 {"".join(f"<tr><td>{os.path.basename(file)}</td><td>{len(items)}</td></tr>" 
-                         for file, items in sorted(results_by_file.items(), key=lambda x: len(x[1]), reverse=True)[:10])}
+                        for file, items in sorted(results_by_file.items(), key=lambda x: len(x[1]), reverse=True)[:10])}
             </table>
         </div>
     </div>
 """
 
-    # Adicionar detalhes para cada arquivo
+    # Adicionar detalhes para cada arquivo (ordem alfabética pelo caminho relativo)
     if detailed:
         html_content += "<h2>Detalhes por Arquivo</h2>\n"
-        for idx, (file_path, items) in enumerate(results_by_file.items()):
+        for idx, (file_path, items) in enumerate(sorted(results_by_file.items(), key=lambda x: os.path.basename(x[0]).lower())):
             file_name = os.path.basename(file_path)
             html_content += f"""
     <div class="file-box" id="file-box-{idx}">
@@ -313,13 +321,16 @@ end;
     </div>
     <script>
     document.querySelectorAll('.file-box').forEach(function(box) {
-        // Estado inicial: colapsado
         box.classList.add('collapsed');
-        box.addEventListener('click', function(e) {
-            if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
-            this.classList.toggle('collapsed');
-            this.classList.toggle('expanded');
-        });
+        var h3 = box.querySelector('h3');
+        if (h3) {
+            h3.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
+                box.classList.toggle('collapsed');
+                box.classList.toggle('expanded');
+                e.stopPropagation();
+            });
+        }
     });
     </script>
 </body>

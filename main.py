@@ -157,7 +157,6 @@ class Application(tk.Tk):
                 )
                 
                 self.log(f"Relatório gerado em: {report_path}")
-                
 
                 os.startfile(report_path)
             else:
