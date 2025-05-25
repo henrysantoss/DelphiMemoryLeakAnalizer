@@ -45,8 +45,6 @@ class Application(tk.Tk):
         options_frame.pack(fill=tk.X, pady=5)
         
         self.detailed_var = tk.BooleanVar(value=True)
-        detailed_check = tk.Checkbutton(options_frame, text="Relatório detalhado", variable=self.detailed_var)
-        detailed_check.pack(side=tk.LEFT, padx=5)
         
         # Botão para iniciar análise
         analyze_btn = tk.Button(options_frame, text="Iniciar Análise", command=self.start_analysis)
@@ -160,10 +158,8 @@ class Application(tk.Tk):
                 
                 self.log(f"Relatório gerado em: {report_path}")
                 
-                # Perguntar se deseja abrir o relatório
-                if messagebox.askyesno("Análise Concluída", 
-                                      f"Encontrados {len(results)} objetos não liberados.\n\nDeseja abrir o relatório?"):
-                    os.startfile(report_path)
+
+                os.startfile(report_path)
             else:
                 self.log("Análise completa. Nenhum vazamento de memória encontrado!")
                 messagebox.showinfo("Análise Concluída", "Nenhum vazamento de memória encontrado!")

@@ -16,7 +16,7 @@ class DelphiMemoryAnalyzer:
         Args:
             debug (bool): Ativar mensagens de depuração
         """
-        self.debug = True
+        self.debug = debug
         self.objects = {}
         self.unreleased = []
     
