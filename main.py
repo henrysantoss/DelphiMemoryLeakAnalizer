@@ -27,17 +27,12 @@ class Application(tk.Tk):
         
         tk.Label(top_frame, text="Projeto:").pack(side=tk.LEFT, padx=(0, 5))
         
-        # Botão para selecionar arquivo .dproj
-        select_btn = tk.Button(top_frame, text="Selecionar arquivo .dproj", command=self.select_dproj)
-        select_btn.pack(side=tk.LEFT, padx=5)
-        
         # Entrada para exibir o caminho do arquivo
         self.dproj_path_var = tk.StringVar()
         self.dproj_entry = tk.Entry(top_frame, textvariable=self.dproj_path_var, width=40)
         self.dproj_entry.pack(side=tk.LEFT, padx=5, fill=tk.X, expand=True)
         
-        # Botão para selecionar um único arquivo .pas
-        single_file_btn = tk.Button(top_frame, text="Ou selecionar arquivo .pas", command=self.select_single_pas)
+        single_file_btn = tk.Button(top_frame, text="Selecionar Arquivo", command=self.select_dproj)
         single_file_btn.pack(side=tk.LEFT, padx=5)
         
         # Checkbox para relatório detalhado
@@ -75,21 +70,11 @@ class Application(tk.Tk):
         """Abre diálogo para selecionar arquivo .dproj"""
         file_path = filedialog.askopenfilename(
             title="Selecionar arquivo .dproj",
-            filetypes=[("Arquivos de projeto Delphi", "*.dproj"), ("Todos os arquivos", "*.*")]
+            filetypes=[("Arquivos de projeto Delphi", "*.dproj"), ("Arquivos Delphi", "*.pas")]
         )
         if file_path:
             self.dproj_path_var.set(file_path)
             self.log(f"Selecionado: {file_path}")
-    
-    def select_single_pas(self):
-        """Abre diálogo para selecionar um único arquivo .pas"""
-        file_path = filedialog.askopenfilename(
-            title="Selecionar arquivo .pas",
-            filetypes=[("Arquivos Delphi", "*.pas"), ("Todos os arquivos", "*.*")]
-        )
-        if file_path:
-            self.dproj_path_var.set(file_path)
-            self.log(f"Selecionado arquivo único: {file_path}")
     
     def start_analysis(self):
         """Inicia a análise em um thread separado"""
@@ -156,8 +141,6 @@ class Application(tk.Tk):
                     detailed=detailed
                 )
                 
-                self.log(f"Relatório gerado em: {report_path}")
-
                 os.startfile(report_path)
             else:
                 self.log("Análise completa. Nenhum vazamento de memória encontrado!")
