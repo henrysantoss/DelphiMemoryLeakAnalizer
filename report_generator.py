@@ -235,13 +235,14 @@ def generate_report(results, output_path, title="Relatório de Vazamento de Mem�
             # Agrupar por método
             methods = collections.defaultdict(list)
             for item in items:
-                methods[item['method_name']].append(item)
+                key = (item['method_name'], item['method_line'])
+                methods[key].append(item)
             
-            for method_name, method_items in methods.items():
+            for (method_name, method_line), method_items in methods.items():
                 method_info = method_items[0]
                 html_content += f"""
         <div class="method-box">
-            <h4>{method_name} ({method_info['method_type']}) - Linha {method_info['method_line']}</h4>
+            <h4>{method_name} ({method_info['method_type']}) - Linha {method_line}</h4>
             <table class="objects-table" width="100%">
                 <tr>
                     <th>Nome do Objeto</th>
