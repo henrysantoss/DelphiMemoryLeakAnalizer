@@ -81,7 +81,7 @@ class Application(tk.Tk):
         file_path = self.dproj_path_var.get()
         
         if not file_path:
-            messagebox.showerror("Erro", "Selecione um arquivo .dproj ou .pas primeiro")
+            messagebox.showerror("Erro", "Selecione um arquivo .dproj ou .pas.")
             return
         
         # Limpar log anterior
