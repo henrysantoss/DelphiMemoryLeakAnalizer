@@ -63,14 +63,30 @@ No exemplo acima, `loQry` é criado mas não é liberado, o que causa um vazamen
 
 ## Estrutura do Projeto
 
-- `main.py`: Interface gráfica e controle principal do programa
-- `dproj_parser.py`: Parser para arquivos de projeto Delphi
-- `pas_analyzer.py`: Analisador de código fonte Delphi
-- `report_generator.py`: Gerador de relatórios HTML
+O projeto é organizado em módulos principais que trabalham em conjunto:
 
-## Contribuindo
+- `main.py`: 
+  - Interface gráfica do usuário (GUI)
+  - Gerenciamento de threads para análise não-bloqueante
+  - Controle do fluxo de análise
+  - Geração e exibição de relatórios
 
-Contribuições são bem-vindas! Se você encontrar algum bug ou tiver sugestões de melhorias, por favor abra uma issue no GitHub.
+- `dproj_parser.py`:
+  - Leitura e interpretação de arquivos .dproj
+  - Extração de arquivos .pas do projeto
+  - Mapeamento de dependências entre arquivos
+
+- `pas_analyzer.py`:
+  - Análise sintática de código Delphi
+  - Detecção de padrões de vazamento de memória
+  - Rastreamento de criação e liberação de objetos
+  - Geração de métricas de análise
+
+- `report_generator.py`:
+  - Geração de relatórios HTML
+  - Formatação e estilização dos resultados
+  - Categorização dos problemas encontrados
+  - Estatísticas de análise
 
 ## Licença
 
