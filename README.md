@@ -115,7 +115,3 @@ O projeto é organizado em módulos principais que trabalham em conjunto:
   - Formatação e estilização dos resultados
   - Categorização dos problemas encontrados
   - Estatísticas de análise
-
-## Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
