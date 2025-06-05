@@ -1,1 +1,2 @@
 # Não requer instalação de pacotes adicionais, apenas as bibliotecas padrão do Python 
+pyparsing>=3.0.0 

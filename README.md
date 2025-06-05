@@ -15,7 +15,17 @@ Este programa analisa arquivos Delphi (.pas) para identificar objetos que não s
 ## Requisitos
 
 - Python 3.6 ou superior
-- Bibliotecas padrão do Python (não requer instalação de pacotes adicionais)
+- Bibliotecas Python:
+  - tkinter (incluído na instalação padrão do Python)
+  - threading (incluído na instalação padrão do Python)
+  - os (incluído na instalação padrão do Python)
+  - re (incluído na instalação padrão do Python)
+  - xml.etree.ElementTree (incluído na instalação padrão do Python)
+  - collections (incluído na instalação padrão do Python)
+  - datetime (incluído na instalação padrão do Python)
+  - webbrowser (incluído na instalação padrão do Python)
+- Bibliotecas de terceiros:
+  - pyparsing (instalar via pip: `pip install pyparsing`)
 - Sistema operacional Windows (recomendado para melhor compatibilidade com projetos Delphi)
 
 ## Como usar
