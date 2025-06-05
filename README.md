@@ -28,6 +28,24 @@ Este programa analisa arquivos Delphi (.pas) para identificar objetos que não s
   - pyparsing (instalar via pip: `pip install pyparsing`)
 - Sistema operacional Windows (recomendado para melhor compatibilidade com projetos Delphi)
 
+## Instalação
+
+1. Certifique-se de ter o Python 3.6 ou superior instalado em seu sistema
+2. Instale o pip (gerenciador de pacotes do Python) se ainda não estiver instalado:
+   - O pip geralmente já vem instalado com o Python 3.4+
+   - Para verificar se está instalado, abra o terminal e digite: `pip --version`
+   - Se não estiver instalado, você pode baixá-lo em: https://pip.pypa.io/en/stable/installation/
+
+3. Instale as dependências do projeto:
+   - Abra o terminal na pasta do projeto
+   - Execute o comando: `pip install -r requirements.txt`
+   - Este comando instalará automaticamente todas as bibliotecas necessárias listadas no arquivo requirements.txt
+
+4. Verificação da instalação:
+   - Para verificar se todas as dependências foram instaladas corretamente, execute:
+     `pip list`
+   - Você deve ver a biblioteca `pyparsing` listada entre os pacotes instalados
+
 ## Como usar
 
 1. Execute o arquivo `main.py`
@@ -100,4 +118,4 @@ O projeto é organizado em módulos principais que trabalham em conjunto:
 
 ## Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes. 
+Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
